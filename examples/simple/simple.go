@@ -62,4 +62,14 @@ func main() {
 	l.Errorln("Error Message")
 	l.Panicln("Panic Message")
 	l.Write(fungolog.Info, "Message from Write()\n")
+
+	fmt.Println("\n++++++++++ TestPrefix ++++++++++")
+	l.Format = formatter.SimpleFormatColor
+	l.PrefixBeforeArgs = " -->@<-- "
+	l.Debugln("Debug Message")
+	l.Infoln("Info Message")
+	l.Warningln("Warning Message")
+	l.Errorln("Error Message")
+	l.Panicln("Panic Message")
+	l.Write(fungolog.Info, "Message from Write()\n")
 }

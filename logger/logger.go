@@ -11,10 +11,11 @@ import (
 )
 
 type Logger struct {
-	Format    func(*bytes.Buffer, fungolog.Level, ...interface{})
-	WriteFunc func([]byte, fungolog.Level)
-	Threshold fungolog.Level
-	Buffers   BufferPool
+	Format           func(*bytes.Buffer, fungolog.Level, ...interface{})
+	WriteFunc        func([]byte, fungolog.Level)
+	Threshold        fungolog.Level
+	Buffers          BufferPool
+	PrefixBeforeArgs string // 在参数之前的前缀
 }
 
 type BufferPool interface {
@@ -106,7 +107,11 @@ func (this *Logger) Write(level fungolog.Level, args ...interface{}) {
 		this.setDefaultWriter()
 	}
 	buf := this.Buffers.Get()
-	this.Format(buf, level, args...)
+	if len(this.PrefixBeforeArgs) > 0 {
+		this.Format(buf, level, this.PrefixBeforeArgs, fmt.Sprint(args...))
+	} else {
+		this.Format(buf, level, args...)
+	}
 	this.WriteFunc(buf.Bytes(), level)
 	this.Buffers.Put(buf)
 }
