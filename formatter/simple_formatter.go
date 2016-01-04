@@ -48,6 +48,27 @@ func SimpleFormatCallerInfo(buf *bytes.Buffer, level fungolog.Level, args ...int
 	fmt.Fprint(buf, args...)
 }
 
+func SimpleFormatCallerColor(buf *bytes.Buffer, level fungolog.Level, args ...interface{}) {
+	var color int
+	switch level {
+	case fungolog.Info:
+		color = CONSOLE_GREEN
+	case fungolog.Warning:
+		color = CONSOLE_YELLOW
+	case fungolog.Error, fungolog.Panic:
+		color = CONSOLE_RED
+	default:
+		color = CONSOLE_WHITE
+	}
+
+	fmt.Fprint(buf, time.Now().Format("2006-01-02 15:04:05.000"),
+		ConsoleColor(color, CONSOLE_BG_TRANS), " [", string(level.String()[0]), "] ")
+	SimpleCallerInfo(buf, 4)
+	buf.WriteByte(' ')
+	fmt.Fprint(buf, args...)
+	buf.WriteString(ConsoleColorReset())
+}
+
 // 当前文件的路径为全路径, 同样,通过Write调用时调用者信息会多跳过一层.
 func SimpleFormatFullCaller(buf *bytes.Buffer, level fungolog.Level, args ...interface{}) {
 	fmt.Fprint(buf, time.Now().Format("15:04:05.000"), " [", string(level.String()[0]), "] ")
