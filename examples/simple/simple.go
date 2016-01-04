@@ -53,4 +53,13 @@ func main() {
 	l.Errorln("Error Message")
 	l.Panicln("Panic Message")
 	l.Write(fungolog.Info, "Message from Write()\n")
+
+	fmt.Println("\n++++++++++ SimpleFormatCallerColor ++++++++++")
+	l.Format = formatter.SimpleFormatCallerColor
+	l.Debugln("Debug Message")
+	l.Infoln("Info Message")
+	l.Warningln("Warning Message")
+	l.Errorln("Error Message")
+	l.Panicln("Panic Message")
+	l.Write(fungolog.Info, "Message from Write()\n")
 }

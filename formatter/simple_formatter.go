@@ -2,79 +2,71 @@ package formatter
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/zhangyuchen0411/fungolog"
-	"time"
 )
 
 // it likes `20:46:55.052 [I] Info Message`
 func SimpleFormat(buf *bytes.Buffer, level fungolog.Level, args ...interface{}) {
-	fmt.Fprint(buf, time.Now().Format("15:04:05.000"), " [", string(level.String()[0]), "] ")
-	fmt.Fprint(buf, args...)
+	DateTime(buf, "15:04:05.000")
+	buf.WriteByte(' ')
+	SimpleLevel(buf, level)
+	buf.WriteByte(' ')
+	Args(buf, args...)
 }
 
 // it likes `2016-01-03 21:06:42.452 [D] Debug Message`
 func SimpleFormatFullTime(buf *bytes.Buffer, level fungolog.Level, args ...interface{}) {
-	fmt.Fprint(buf, time.Now().Format("2006-01-02 15:04:05.000"), " [", string(level.String()[0]), "] ")
-	fmt.Fprint(buf, args...)
+	DateTime(buf, "2006-01-02 15:04:05.000")
+	buf.WriteByte(' ')
+	SimpleLevel(buf, level)
+	buf.WriteByte(' ')
+	Args(buf, args...)
 }
 
 // 这个恐怕需要你自己去看了 examples/simple
 func SimpleFormatColor(buf *bytes.Buffer, level fungolog.Level, args ...interface{}) {
-	var color int
-	switch level {
-	case fungolog.Info:
-		color = CONSOLE_GREEN
-	case fungolog.Warning:
-		color = CONSOLE_YELLOW
-	case fungolog.Error, fungolog.Panic:
-		color = CONSOLE_RED
-	default:
-		color = CONSOLE_WHITE
-	}
-
-	fmt.Fprint(buf, time.Now().Format("2006-01-02 15:04:05.000"),
-		ConsoleColor(color, CONSOLE_BG_TRANS), " [", string(level.String()[0]), "] ")
-	fmt.Fprint(buf, args...)
+	DateTime(buf, "2006-01-02 15:04:05.000")
+	ColorByLevel(buf, level)
+	buf.WriteByte(' ')
+	SimpleLevel(buf, level)
+	buf.WriteByte(' ')
+	Args(buf, args...)
 	buf.WriteString(ConsoleColorReset())
 }
 
 // it likes `21:22:29.400 [D] simple.go:35 Debug Message`
 // 注意: 通过Write调用时调用者信息会多跳过一层.
 func SimpleFormatCallerInfo(buf *bytes.Buffer, level fungolog.Level, args ...interface{}) {
-	fmt.Fprint(buf, time.Now().Format("15:04:05.000"), " [", string(level.String()[0]), "] ")
+	DateTime(buf, "15:04:05.000")
+	buf.WriteByte(' ')
+	SimpleLevel(buf, level)
+	buf.WriteByte(' ')
 	SimpleCallerInfo(buf, 4)
 	buf.WriteByte(' ')
-	fmt.Fprint(buf, args...)
+	Args(buf, args...)
 }
 
 func SimpleFormatCallerColor(buf *bytes.Buffer, level fungolog.Level, args ...interface{}) {
-	var color int
-	switch level {
-	case fungolog.Info:
-		color = CONSOLE_GREEN
-	case fungolog.Warning:
-		color = CONSOLE_YELLOW
-	case fungolog.Error, fungolog.Panic:
-		color = CONSOLE_RED
-	default:
-		color = CONSOLE_WHITE
-	}
-
-	fmt.Fprint(buf, time.Now().Format("2006-01-02 15:04:05.000"),
-		ConsoleColor(color, CONSOLE_BG_TRANS), " [", string(level.String()[0]), "] ")
+	DateTime(buf, "2006-01-02 15:04:05.000")
+	ColorByLevel(buf, level)
+	buf.WriteByte(' ')
+	SimpleLevel(buf, level)
+	buf.WriteByte(' ')
 	SimpleCallerInfo(buf, 4)
 	buf.WriteByte(' ')
-	fmt.Fprint(buf, args...)
+	Args(buf, args...)
 	buf.WriteString(ConsoleColorReset())
 }
 
 // 当前文件的路径为全路径, 同样,通过Write调用时调用者信息会多跳过一层.
 func SimpleFormatFullCaller(buf *bytes.Buffer, level fungolog.Level, args ...interface{}) {
-	fmt.Fprint(buf, time.Now().Format("15:04:05.000"), " [", string(level.String()[0]), "] ")
+	DateTime(buf, "15:04:05.000")
+	buf.WriteByte(' ')
+	SimpleLevel(buf, level)
+	buf.WriteByte(' ')
 	FullCallerInfo(buf, 4)
 	buf.WriteByte(' ')
-	fmt.Fprint(buf, args...)
+	Args(buf, args...)
 }
 
 // Error级别及以上时打印出当前goroutine调用堆栈
