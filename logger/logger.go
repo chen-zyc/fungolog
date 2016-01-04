@@ -102,7 +102,7 @@ func (this *Logger) Write(level fungolog.Level, args ...interface{}) {
 	if this.Format == nil {
 		this.setDefaultFormatter()
 	}
-	if this.Write == nil {
+	if this.WriteFunc == nil {
 		this.setDefaultWriter()
 	}
 	buf := this.Buffers.Get()
