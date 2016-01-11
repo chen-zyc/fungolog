@@ -69,3 +69,5 @@ func (this *FileWriter) makeDir(fullPath string) error {
 	dir := filepath.Dir(fullPath)
 	return os.MkdirAll(dir, os.ModePerm)
 }
+
+var _ Writer = &FileWriter{}
