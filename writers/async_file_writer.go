@@ -17,7 +17,10 @@ func NewAsyncFileWriter(w *FileWriter, bufSize int) *AsyncFileWriter {
 }
 
 func (this *AsyncFileWriter) Write(data []byte) error {
-	this.c <- data
+	// 如果data是复用的，当asyncWrite()读取时数据可能被复用了
+	temp := make([]byte, len(data))
+	copy(temp, data)
+	this.c <- temp
 	return nil
 }
 
