@@ -1,12 +1,12 @@
 package writers
 
 type AsyncFileWriter struct {
-	w     *FileWriter
+	w     Writer
 	c     chan []byte
 	close chan bool
 }
 
-func NewAsyncFileWriter(w *FileWriter, bufSize int) *AsyncFileWriter {
+func NewAsyncFileWriter(w Writer, bufSize int) *AsyncFileWriter {
 	aw := &AsyncFileWriter{
 		w:     w,
 		c:     make(chan []byte, bufSize),
